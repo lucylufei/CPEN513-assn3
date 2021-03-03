@@ -1,5 +1,7 @@
 from settings import *
 import random
+import matplotlib
+from matplotlib import cm
 
 def debug_print(content):
     '''
@@ -62,12 +64,14 @@ def draw_partition(canvas, partition, configs, nets):
         cells[cell] = (coord[0]+half, coord[1])
             
     debug_print(cells)
+    
+    colour_range = 1.0 / len(nets)
             
     for i, net in enumerate(nets):
         orig = net[0]
         for cell in net[1:]:
             dest = cell
-            draw_line(cells[orig], cells[dest], canvas, grid, colour=wire_colour_palette[i%len(wire_colour_palette)], tag="wire")
+            draw_line(cells[orig], cells[dest], canvas, grid, colour=matplotlib.colors.to_hex(cm.hsv(i*colour_range)), tag="wire")
         
         
         
@@ -108,4 +112,32 @@ def draw_line(orig, dest, c, grid, colour="gray", tag="", size=20):
         fill=colour,
         tag=tag
     )
+
+
+def cut_size(partition, nets):
     
+    cut_size = 0
+    
+    for net in nets:
+        left = net[0] in partition["left"]
+        
+        for cell in net[1:]:
+            right = cell in partition["right"]
+            
+            if (left and right) or (not left and not right):
+                cut_size += 1
+                break
+            
+    return cut_size
+    
+    
+def write_cutsize(c, cut_size):
+    c.delete("cost")
+    c.create_text(
+        grid["right"] - 100,
+        20,
+        text="Cost: {}".format(cut_size),
+        fill="black",
+        font=('Arial',20,'bold'),
+        tag="cost"
+    )
