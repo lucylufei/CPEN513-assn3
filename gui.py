@@ -30,6 +30,7 @@ if single_circuit:
     frame.grid(row=0, column=0)
     grid["x"] = (grid["right"] - grid["left"]) / configs["cells"]
     grid["y"] = (grid["bottom"] - grid["top"]) / configs["cells"]
+    print(grid["y"])
     c = Canvas(frame, bg=background_colour, width=screensize["width"], height=screensize["height"])
     c.pack()
 
@@ -50,9 +51,11 @@ if single_circuit:
     # Add buttons
     button_frame = Frame(root, width=screensize["width"])
     init_button = Button(button_frame, text ="Initialize", command=branch_bound.initialize_partition)
+    run_button = Button(button_frame, text ="Run", command=branch_bound.run_algorithm)
     
     button_frame.grid(row=1, column=0)
     init_button.grid(row=0, column=0)
+    run_button.grid(row=0, column=1)
     
     
     
@@ -60,9 +63,9 @@ if single_circuit:
 else:
     pass
     
-    
-# Close debug log
-debug_log.close()
 
 # Run GUI
 root.mainloop()
+    
+# Close debug log
+debug_log.close()
