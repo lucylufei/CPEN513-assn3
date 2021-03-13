@@ -2,9 +2,14 @@ debug = False
 single_circuit = True
 
 debug_log = open("logs/debug.txt", "a+")
+gui = False
+filename = "con1"
+
+save_to_file = True
+out_file = None
 
 initial_partition = "random"
-initializing_iterations = 5
+initializing_iterations = 10
 fixed_partition = {
     "left": [0, 2, 3, 4, 6, 7, 9],
     "right": [1, 5, 8, 10, 11, 12, 13]

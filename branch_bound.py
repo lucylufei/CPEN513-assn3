@@ -12,10 +12,17 @@ class BranchBound():
         self.nets = nets
         
         
-    def initialize_partition(self):
+    def clear(self):
         self.c.delete("cell")
         self.c.delete("wire")
         self.c.delete("cost")
+        self.c.delete("node")
+        
+    def initialize_partition(self):
+        if gui:
+            self.c.delete("cell")
+            self.c.delete("wire")
+            self.c.delete("cost")
         
         if initial_partition == "random":
             
@@ -34,28 +41,35 @@ class BranchBound():
             self.current_cutsize = cut_size(self.partition, self.nets)
                 
         
-        draw_partition(self.c, self.partition, self.configs, self.nets)
-        write_cutsize(self.c, self.current_cutsize)
+        if gui:
+            draw_partition(self.c, self.partition, self.configs, self.nets)
+            write_cutsize(self.c, self.current_cutsize)
         
     
     def run_algorithm(self):
         
         self.nodes_visited = 0
         self.leaf_nodes_visited = 0
+        self.path = []
         self.generate_tree({"left": [], "right": []}, 0)
         
         print("DONE")
         self.print_results()
         
-        self.c.delete("cell")
-        self.c.delete("wire")
-        self.c.delete("cost")
-        draw_partition(self.c, self.partition, self.configs, self.nets)
-        write_cutsize(self.c, self.current_cutsize)
-        draw_path(self.c, self.path, self.configs["cells"])
+        if gui:
+            self.c.delete("cell")
+            self.c.delete("wire")
+            self.c.delete("cost")
+            draw_partition(self.c, self.partition, self.configs, self.nets)
+            write_cutsize(self.c, self.current_cutsize)
+            draw_path(self.c, self.path, self.configs["cells"])
+        
+            self.c.update()
         
     
     def print_results(self):
+        print("\nFinal Cutsize: {}\n".format(self.current_cutsize))
+        
         print("{nodes} nodes visited out of {total} nodes total ({percent})".format(
             nodes=self.nodes_visited, 
             total=sum([pow(2, row) for row in range(self.configs["cells"]+1)]),
@@ -70,6 +84,27 @@ class BranchBound():
         print("Left: {}".format(self.partition["left"]))
         print("Right: {}".format(self.partition["right"]))
         
+        
+    def write_output(self, out_file):
+
+        out_file.write("\nFinal Partition\n")
+        out_file.write("\tLeft: {}\n".format(self.partition["left"]))
+        out_file.write("\tRight: {}\n".format(self.partition["right"]))
+        
+        out_file.write("\nFinal Cutsize: {}\n\n".format(self.current_cutsize))
+    
+        out_file.write("{nodes} nodes visited out of {total} nodes total ({percent})\n".format(
+            nodes=self.nodes_visited, 
+            total=sum([pow(2, row) for row in range(self.configs["cells"]+1)]),
+            percent=float(self.nodes_visited) / sum([pow(2, row) for row in range(self.configs["cells"]+1)])
+        ))
+        out_file.write("{nodes} leaf nodes visited out of {total} leaf nodes total ({percent})\n".format(
+            nodes=self.leaf_nodes_visited, 
+            total=pow(2, self.configs["cells"]), 
+            percent=float(self.leaf_nodes_visited) / pow(2, self.configs["cells"])
+        ))
+        
+            
     
     def generate_tree(self, current_assignment, next_node, path=[]):
         if next_node == None:
@@ -81,11 +116,13 @@ class BranchBound():
                 self.current_cutsize = cost
                 self.partition = current_assignment
                 self.path = path
-                draw_node(self.c, path, cost, colour="green")
+                if gui:
+                    draw_node(self.c, path, cost, colour="green")
                 debug_print("New partition found! {a} has cost {c}".format(a=format_partition(current_assignment), c=cost))
                 debug_print(self.path)
             else:
-                draw_node(self.c, path, cost, colour="red")
+                if gui:
+                    draw_node(self.c, path, cost, colour="red")
                 debug_print("Cost {c} higher than lowest cost {l}. {a} pruned.".format(c=cost, l=self.current_cutsize, a=format_partition(current_assignment)))
                 
         else:
@@ -93,7 +130,8 @@ class BranchBound():
             cost = cut_size(current_assignment, self.nets)
             
             if cost < self.current_cutsize:
-                draw_node(self.c, path, cost)
+                if gui:
+                    draw_node(self.c, path, cost)
                 
                 # Left
                 temp_current_assignment = copy.deepcopy(current_assignment)
@@ -124,7 +162,8 @@ class BranchBound():
                     debug_print("Partition {a} imbalanced. Pruned".format(a=format_partition(current_assignment)))
                 
             else:
-                draw_node(self.c, path, cost, colour="yellow")
+                if gui:
+                    draw_node(self.c, path, cost, colour="yellow")
                 debug_print("Cost {c} higher than lowest cost {l}. {a} pruned.".format(c=cost, l=self.current_cutsize, a=format_partition(current_assignment)))
                 
     

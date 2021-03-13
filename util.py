@@ -196,6 +196,9 @@ def draw_node(c, path, cost, colour="gray"):
 
 def draw_path(c, path, n_cells, colour="green"):
     
+    if (path == []):
+        return
+    
     prev_node_x = grid2["left"] + (grid2["right"] - grid2["left"]) / 2
     prev_node_y = grid2["top"]
     
