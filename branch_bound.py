@@ -40,9 +40,13 @@ class BranchBound():
     
     def run_algorithm(self):
         
+        self.nodes_visited = 0
+        self.leaf_nodes_visited = 0
         self.generate_tree({"left": [], "right": []}, 0)
         
         print("DONE")
+        self.print_results()
+        
         self.c.delete("cell")
         self.c.delete("wire")
         self.c.delete("cost")
@@ -51,9 +55,25 @@ class BranchBound():
         draw_path(self.c, self.path, self.configs["cells"])
         
     
+    def print_results(self):
+        print("{nodes} nodes visited out of {total} nodes total ({percent})".format(
+            nodes=self.nodes_visited, 
+            total=sum([pow(2, row) for row in range(self.configs["cells"]+1)]),
+            percent=float(self.nodes_visited) / sum([pow(2, row) for row in range(self.configs["cells"]+1)])
+        ))
+        print("{nodes} leaf nodes visited out of {total} leaf nodes total ({percent})".format(
+            nodes=self.leaf_nodes_visited, 
+            total=pow(2, self.configs["cells"]), 
+            percent=float(self.leaf_nodes_visited) / pow(2, self.configs["cells"])
+        ))
+        
+        print("Left: {}".format(self.partition["left"]))
+        print("Right: {}".format(self.partition["right"]))
+        
     
     def generate_tree(self, current_assignment, next_node, path=[]):
         if next_node == None:
+            self.leaf_nodes_visited += 1
             check_legality(current_assignment, self.configs["cells"])
             # Check cost
             cost = cut_size(current_assignment, self.nets)
@@ -69,6 +89,7 @@ class BranchBound():
                 debug_print("Cost {c} higher than lowest cost {l}. {a} pruned.".format(c=cost, l=self.current_cutsize, a=format_partition(current_assignment)))
                 
         else:
+            self.nodes_visited += 1
             cost = cut_size(current_assignment, self.nets)
             
             if cost < self.current_cutsize:
