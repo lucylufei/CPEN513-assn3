@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 from tkinter import *
 from tkinter.ttk import *
 from settings import *
@@ -10,7 +11,7 @@ from branch_bound import *
 
 # Initialize the debug log
 debug_log.write("\n\n{}\n".format("="*20))
-debug_log.write(time.strftime("%Y-%m-%d %H:%M:%S\n", time.localtime()))
+debug_log.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S\n"))
 debug_log.write("{}\n".format("="*20))
 
 
@@ -60,7 +61,7 @@ if single_circuit:
         run_button.grid(row=0, column=1)
         
     else:
-        out_file_name = "logs/Results__{}".format(time.strftime("%m-%d_%H-%M-%S", time.localtime()))
+        out_file_name = "logs/Results__{}".format(datetime.now().strftime("%m-%d_%H-%M-%S"))
         out_file = open(out_file_name, "w+")
         out_file.write("Initialization Iterations: {}\n".format(initializing_iterations))
         
@@ -69,6 +70,8 @@ if single_circuit:
         out_file = open(out_file_name, "a+")
         out_file.write("="*40)
         out_file.write("\nCircuit: {}\n".format(filename))
+        start_time = datetime.now()
+        out_file.write("Start time: {}\n".format(start_time.strftime("%m-%d %H:%M:%S")))
         out_file.write("\nInitial Partition\n")
         out_file.write("\tLeft: {}\n".format(branch_bound.partition["left"]))
         out_file.write("\tRight: {}\n".format(branch_bound.partition["right"]))
@@ -76,8 +79,13 @@ if single_circuit:
         
         branch_bound.run_algorithm()
         
+        end_time = datetime.now()
+        elapsed_time = end_time - start_time
+        
         out_file = open(out_file_name, "a+")
         branch_bound.write_output(out_file)
+        out_file.write("End time: {}\n".format(end_time.strftime("%m-%d %H:%M:%S")))
+        out_file.write("Elapsed time: {}\n".format(str(elapsed_time)))
         out_file.close()
         
         
