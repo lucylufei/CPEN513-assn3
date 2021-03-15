@@ -1,5 +1,6 @@
 from util import *
 from settings import *
+from kernighan_lin import *
 import copy
 
 
@@ -39,8 +40,14 @@ class BranchBound():
         elif initial_partition == "fixed":
             self.partition = fixed_partition
             self.current_cutsize = cut_size(self.partition, self.nets)
-                
+            
         
+        elif initial_partition == "clever":
+            fm = KernighanLin(self.configs["cells"], self.nets)
+            
+            self.partition = fm.partition()
+            self.current_cutsize = cut_size(self.partition, self.nets)
+            
         if gui:
             draw_partition(self.c, self.partition, self.configs, self.nets)
             write_cutsize(self.c, self.current_cutsize)
@@ -109,7 +116,7 @@ class BranchBound():
     def generate_tree(self, current_assignment, next_node, path=[]):
         if next_node == None:
             self.leaf_nodes_visited += 1
-            check_legality(current_assignment, self.configs["cells"])
+            assert check_legality(current_assignment, self.configs["cells"])
             # Check cost
             cost = cut_size(current_assignment, self.nets)
             if cost < self.current_cutsize:

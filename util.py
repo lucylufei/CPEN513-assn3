@@ -35,7 +35,7 @@ def initialize_partition(n_cells):
             cells.remove(cell)
             partition["right"].add(cell)
             
-    check_legality(partition, n_cells)
+    assert check_legality(partition, n_cells)
     
     debug_print("Partition Left: {}".format(partition["left"]))
     debug_print("Partition Right: {}".format(partition["right"]))
@@ -56,12 +56,14 @@ def draw_partition(canvas, partition, configs, nets):
         left_partition.remove(coord)
         draw_circle(canvas, coord[0], coord[1], tag="cell")
         cells[cell] = coord
+        write_cell(canvas, coord[0], coord[1], cell)
         
     for cell in partition["right"]:
         coord = random.choice(right_partition)
         right_partition.remove(coord)
         draw_circle(canvas, coord[0]+half, coord[1], tag="cell")
         cells[cell] = (coord[0]+half, coord[1])
+        write_cell(canvas, coord[0]+half, coord[1], cell)
             
     debug_print(cells)
     
@@ -73,7 +75,18 @@ def draw_partition(canvas, partition, configs, nets):
             dest = cell
             draw_line(cells[orig], cells[dest], canvas, grid, colour=matplotlib.colors.to_hex(cm.hsv(i*colour_range)), tag="wire")
         
-        
+
+def write_cell(c, x, y, text, color="red", tag="cell"):
+    x_left = grid["left"] + x * grid["x"]
+    y_top = grid["top"] + y * grid["y"]
+    c.create_text(
+        x_left,
+        y_top,
+        text=text,
+        font=('Arial',20,'bold'),
+        fill=color,
+        tag=tag
+    )
         
 def draw_circle(c, x, y, color="black", tag=None, size=20):
     
@@ -150,9 +163,13 @@ def write_cutsize(c, cut_size):
     
 def check_legality(partition, n_cells):
     # Check for even split
-    assert abs(len(partition["left"]) - len(partition["right"])) <= 1
+    if not abs(len(partition["left"]) - len(partition["right"])) <= 1:
+        return False
     # Check that all nodes have been assigned
-    assert len(partition["left"]) + len(partition["right"]) == n_cells
+    if not len(partition["left"]) + len(partition["right"]) == n_cells:
+        return False
+        
+    return True
     
     
 def format_partition(partition):
