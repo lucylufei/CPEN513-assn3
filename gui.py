@@ -19,8 +19,8 @@ debug_log.write("{}\n".format("="*20))
 if single_circuit:
 
     # Open circuit
-    debug_print("Reading configurations for {}...".format(filename))
-    configs, nets = parse_file("./benchmarks/{}.txt".format(filename))
+    debug_print("Reading configurations for {}...".format(circuit_name))
+    configs, nets = parse_file("./benchmarks/{}.txt".format(circuit_name))
 
     # Initialize GUI
     if gui:
@@ -35,7 +35,7 @@ if single_circuit:
         c.create_text(
             20,
             20,
-            text="Circuit: {}".format(filename),
+            text="Circuit: {}".format(circuit_name),
             fill="black",
             font=('Arial',20,'bold'),
             anchor=W
@@ -67,6 +67,7 @@ if single_circuit:
         # If no GUI, record results in output file
         out_file_name = "logs/Results__{}".format(datetime.now().strftime("%m-%d_%H-%M-%S"))
         out_file = open(out_file_name, "w+")
+        out_file.write("Initialization Type: {}\n".format(initial_partition))
         out_file.write("Initialization Iterations: {}\n".format(initializing_iterations))
         
         # Initialize partition
@@ -75,7 +76,7 @@ if single_circuit:
         # Initialize output file
         out_file = open(out_file_name, "a+")
         out_file.write("="*40)
-        out_file.write("\nCircuit: {}\n".format(filename))
+        out_file.write("\nCircuit: {}\n".format(circuit_name))
         start_time = datetime.now()
         out_file.write("Start time: {}\n".format(start_time.strftime("%m-%d %H:%M:%S")))
         out_file.write("\nInitial Partition\n")

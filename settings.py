@@ -5,23 +5,23 @@ debug_log = open("logs/debug.txt", "a+")
 # Run a 1 circuit only
 single_circuit = True
 # Circuit to run (if running 1 circuit only)
-filename = "z4ml"
+circuit_name = "con1"
 
 # Show GUI
 gui = True
 
-# Global variable for output file
+# Global variable for output file (ignore)
 out_file = None
 
 # Settings for initial partition
 # "random", "fixed", "clever"
-initial_partition = "clever"
+initial_partition = "random"
 # Number of iterations for initialization
 initializing_iterations = 15
 # Manually enter an initial partition
 fixed_partition = {
-    "left": [0, 2, 3, 4, 6, 7, 9],
-    "right": [1, 5, 8, 10, 11, 12, 13]
+    "left": [0, 1, 3, 5, 6, 8, 9, 11, 12, 14, 16, 17, 20, 23, 24, 26, 29, 33, 37, 38, 41, 43, 45, 46, 47, 48, 49, 50, 51, 53, 54, 57, 61, 63, 68],
+    "right": [2, 4, 7, 10, 13, 15, 18, 19, 21, 22, 25, 27, 28, 30, 31, 32, 34, 35, 36, 39, 40, 42, 44, 52, 55, 56, 58, 59, 60, 62, 64, 65, 66, 67, 69]
 }
 
 # GUI settings
