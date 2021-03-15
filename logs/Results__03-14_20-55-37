@@ -1,0 +1,20 @@
+Initialization Type: clever
+Initialization Iterations: 15
+========================================
+Circuit: cm82a
+Start time: 03-14 20:55:37
+
+Initial Partition
+	Left: {3, 5, 7, 8, 9, 10}
+	Right: {0, 1, 2, 4, 6, 11}
+
+Final Partition
+	Left: {3, 5, 7, 8, 9, 10}
+	Right: {0, 1, 2, 4, 6, 11}
+
+Final Cutsize: 1
+
+87 nodes visited out of 8191 nodes total (0.010621413746795262)
+0 leaf nodes visited out of 4096 leaf nodes total (0.0)
+End time: 03-14 20:55:37
+Elapsed time: 0:00:00.002415

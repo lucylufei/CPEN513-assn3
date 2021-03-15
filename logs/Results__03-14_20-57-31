@@ -1,0 +1,20 @@
+Initialization Type: clever
+Initialization Iterations: 15
+========================================
+Circuit: z4ml
+Start time: 03-14 20:57:31
+
+Initial Partition
+	Left: {0, 1, 2, 3, 6, 8, 10, 11, 12, 18}
+	Right: {4, 5, 7, 9, 13, 14, 15, 16, 17}
+
+Final Partition
+	Left: [0, 1, 2, 3, 5, 8, 10, 12, 13, 16]
+	Right: [4, 6, 7, 9, 11, 14, 15, 17, 18]
+
+Final Cutsize: 3
+
+5252 nodes visited out of 1048575 nodes total (0.005008702286436354)
+4 leaf nodes visited out of 524288 leaf nodes total (7.62939453125e-06)
+End time: 03-14 20:57:31
+Elapsed time: 0:00:00.160984

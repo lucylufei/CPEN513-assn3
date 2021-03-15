@@ -1,0 +1,20 @@
+Initialization Type: clever
+Initialization Iterations: 15
+========================================
+Circuit: ugly16
+Start time: 03-14 20:57:24
+
+Initial Partition
+	Left: {0, 1, 2, 5, 6, 10, 11, 12}
+	Right: {3, 4, 7, 8, 9, 13, 14, 15}
+
+Final Partition
+	Left: {0, 1, 2, 5, 6, 10, 11, 12}
+	Right: {3, 4, 7, 8, 9, 13, 14, 15}
+
+Final Cutsize: 16
+
+33 nodes visited out of 131071 nodes total (0.0002517719403987152)
+0 leaf nodes visited out of 65536 leaf nodes total (0.0)
+End time: 03-14 20:57:24
+Elapsed time: 0:00:00.001557

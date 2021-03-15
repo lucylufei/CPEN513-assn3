@@ -1,0 +1,20 @@
+Initialization Type: random
+Initialization Iterations: 15
+========================================
+Circuit: ugly8
+Start time: 03-14 20:59:54
+
+Initial Partition
+	Left: {1, 5, 6, 7}
+	Right: {0, 2, 3, 4}
+
+Final Partition
+	Left: {1, 5, 6, 7}
+	Right: {0, 2, 3, 4}
+
+Final Cutsize: 8
+
+17 nodes visited out of 511 nodes total (0.033268101761252444)
+0 leaf nodes visited out of 256 leaf nodes total (0.0)
+End time: 03-14 20:59:54
+Elapsed time: 0:00:00.000558

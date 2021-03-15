@@ -1,0 +1,20 @@
+Initialization Type: clever
+Initialization Iterations: 15
+========================================
+Circuit: con1
+Start time: 03-14 20:56:55
+
+Initial Partition
+	Left: {0, 2, 3, 6, 7, 8, 9}
+	Right: {1, 4, 5, 10, 11, 12, 13}
+
+Final Partition
+	Left: [0, 1, 4, 5, 10, 12, 13]
+	Right: [2, 3, 6, 7, 8, 9, 11]
+
+Final Cutsize: 4
+
+2939 nodes visited out of 32767 nodes total (0.08969389934995575)
+73 leaf nodes visited out of 16384 leaf nodes total (0.00445556640625)
+End time: 03-14 20:56:55
+Elapsed time: 0:00:00.092946
