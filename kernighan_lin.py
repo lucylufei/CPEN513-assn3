@@ -42,6 +42,19 @@ class KernighanLin():
             # Choose node with highest gain whose movement would not cause an imbalance
             gains = copy.deepcopy(self.gains)
             highest_gain = max(gains, key=gains.get)
+            
+            if (self.n_cells % 2 == 0):
+                while highest_gain not in unlocked_nodes:
+                    del gains[highest_gain]
+                    highest_gain = max(gains, key=gains.get)
+                    
+                debug_print("Chosen {}".format(highest_gain))
+                self.current_partition = self.swap_node(highest_gain, self.current_partition)
+                unlocked_nodes.remove(highest_gain)
+                debug_print("New partition: {}".format(self.current_partition))
+                
+                del gains[highest_gain]
+                highest_gain = max(gains, key=gains.get)    
             debug_print("Chosen {}".format(highest_gain))
             
             self.current_partition = self.swap_node(highest_gain, self.current_partition)
