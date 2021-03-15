@@ -26,15 +26,18 @@ def initialize_partition(n_cells):
     partition["right"] = set()
     
     while len(cells) > 0:
+        # Randomly choose a cell for left partition
         cell = random.choice(cells)
         cells.remove(cell)
         partition["left"].add(cell)
         
         if len(cells) > 0:
+            # Randomly choose a cell for right partition
             cell = random.choice(cells)
             cells.remove(cell)
             partition["right"].add(cell)
             
+    # Check that the partition is legal
     assert check_legality(partition, n_cells)
     
     debug_print("Partition Left: {}".format(partition["left"]))
@@ -44,32 +47,43 @@ def initialize_partition(n_cells):
         
         
 def draw_partition(canvas, partition, configs, nets):
+    '''
+    Draw partition on GUI canvas
+    '''
     
+    # Make a list of possible locations for cells in each partition
     half = int(round(configs["cells"] / 2))
     left_partition = [(x, y) for x in range(0, half) for y in range(0, configs["cells"])]
     right_partition = [(x, y) for x in range(0, half) for y in range(0, configs["cells"])]
     
     cells = {}
     
+    # Assign coordinates for each cell in the left partition randomly
     for cell in partition["left"]:
         coord = random.choice(left_partition)
         left_partition.remove(coord)
+        # Draw the cell
         draw_circle(canvas, coord[0], coord[1], tag="cell")
         cells[cell] = coord
         write_cell(canvas, coord[0], coord[1], cell)
         
+    # Assign coordinates for each cell in the right partition randomly
     for cell in partition["right"]:
         coord = random.choice(right_partition)
         right_partition.remove(coord)
+        # Draw the cell
         draw_circle(canvas, coord[0]+half, coord[1], tag="cell")
         cells[cell] = (coord[0]+half, coord[1])
         write_cell(canvas, coord[0]+half, coord[1], cell)
             
     debug_print(cells)
     
+    # Set up the colour palette to draw connections
     colour_range = 1.0 / len(nets)
             
+    # Draw connections
     for i, net in enumerate(nets):
+        # Set the first cell as the origin and draw lines to all other cells for the net
         orig = net[0]
         for cell in net[1:]:
             dest = cell
@@ -77,8 +91,13 @@ def draw_partition(canvas, partition, configs, nets):
         
 
 def write_cell(c, x, y, text, color="red", tag="cell"):
+    '''
+    Write the label for each cell
+    '''
+    # Convert coordinates to canvas grid
     x_left = grid["left"] + x * grid["x"]
     y_top = grid["top"] + y * grid["y"]
+    
     c.create_text(
         x_left,
         y_top,
@@ -87,9 +106,14 @@ def write_cell(c, x, y, text, color="red", tag="cell"):
         fill=color,
         tag=tag
     )
+    
         
 def draw_circle(c, x, y, color="black", tag=None, size=20):
+    '''
+    Draw a circle
+    '''
     
+    # Convert coordinates to canvas grid
     x_left = grid["left"] + x * grid["x"]
     y_top = grid["top"] + y * grid["y"]
     x_right = x_left + size
@@ -128,9 +152,13 @@ def draw_line(orig, dest, c, grid, colour="gray", tag="", size=20):
 
 
 def cut_size(partition, nets):
-    
+    '''
+    Calculate the cut size
+    '''
+    # Initialize to 0
     cut_size = 0
     
+    # Iterate through each net
     for net in nets:
         left = False
         right = False
@@ -139,6 +167,7 @@ def cut_size(partition, nets):
             node_left = node in partition["left"]
             node_right = node in partition["right"]
             
+            # Add to cut size if any nodes cross the partition
             if left and node_right or right and node_left:
                 cut_size += 1
                 break
@@ -150,7 +179,12 @@ def cut_size(partition, nets):
     
     
 def write_cutsize(c, cut_size):
+    '''
+    Write cutsize on GUI canvas
+    '''
+    # Clear any previous text
     c.delete("cost")
+    
     c.create_text(
         grid["right"] - 100,
         20,
@@ -162,6 +196,9 @@ def write_cutsize(c, cut_size):
     
     
 def check_legality(partition, n_cells):
+    '''
+    Check whether the partition is legal
+    '''
     # Check for even split
     if not abs(len(partition["left"]) - len(partition["right"])) <= 1:
         return False
@@ -173,6 +210,9 @@ def check_legality(partition, n_cells):
     
     
 def format_partition(partition):
+    '''
+    Format the partition string for printing
+    '''
     string = ""
     
     string += "{}".format(partition["left"])
@@ -183,6 +223,10 @@ def format_partition(partition):
     
     
 def draw_node(c, path, cost, colour="gray"):
+    '''
+    Draw node for branch and bound tree
+    '''
+    # Calculate grid coordinates for node
     depth = len(path)
     n_options = pow(2, depth)
     
@@ -192,6 +236,7 @@ def draw_node(c, path, cost, colour="gray"):
         n = n / 2
         location += n if path[i] == "right" else 0
         
+    # Get x,y coordinates for node
     location_x = grid2["left"] + (1 + 2*location) * (grid2["right"] - grid2["left"]) / pow(2, depth+1)
     location_y = grid2["top"] + depth * grid["y"]
     
@@ -212,13 +257,19 @@ def draw_node(c, path, cost, colour="gray"):
     
 
 def draw_path(c, path, n_cells, colour="green"):
+    '''
+    Draw the path to the final selected partition on the tree
+    '''
     
+    # Ignore if the best option was the initial partition and not from the tree
     if (path == []):
         return
     
+    # Find root node coordinates
     prev_node_x = grid2["left"] + (grid2["right"] - grid2["left"]) / 2
     prev_node_y = grid2["top"]
     
+    # Draw line to each node
     for t in range(n_cells):
         cell = t + 1
         location = 0
@@ -227,6 +278,7 @@ def draw_path(c, path, n_cells, colour="green"):
             n = n / 2
             location += n if path[i] == "right" else 0
             
+        # Get x,y coordinates to draw line to
         location_x = grid2["left"] + (1 + 2*location) * (grid2["right"] - grid2["left"]) / pow(2, cell+1)
         location_y = grid2["top"] + cell * grid["y"]
             

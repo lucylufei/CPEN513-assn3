@@ -43,11 +43,14 @@ if single_circuit:
         
         c.create_line(grid["middlex"], grid["top"], grid["middlex"], grid["bottom"], fill=line_colour)
 
+        # Initialize branch and bound
         branch_bound = BranchBound(c)
     
     else:
+        # Initialize branch and bound
         branch_bound = BranchBound(None)
         
+    # Set up branch and bound with current circuit
     branch_bound.setup(configs, nets)
 
     if gui:
@@ -61,12 +64,15 @@ if single_circuit:
         run_button.grid(row=0, column=1)
         
     else:
+        # If no GUI, record results in output file
         out_file_name = "logs/Results__{}".format(datetime.now().strftime("%m-%d_%H-%M-%S"))
         out_file = open(out_file_name, "w+")
         out_file.write("Initialization Iterations: {}\n".format(initializing_iterations))
         
+        # Initialize partition
         branch_bound.initialize_partition()
         
+        # Initialize output file
         out_file = open(out_file_name, "a+")
         out_file.write("="*40)
         out_file.write("\nCircuit: {}\n".format(filename))
@@ -77,11 +83,14 @@ if single_circuit:
         out_file.write("\tRight: {}\n".format(branch_bound.partition["right"]))
         out_file.close()
         
+        # Run algorithm
         branch_bound.run_algorithm()
         
+        # Track time
         end_time = datetime.now()
         elapsed_time = end_time - start_time
         
+        # Update output file with results
         out_file = open(out_file_name, "a+")
         branch_bound.write_output(out_file)
         out_file.write("End time: {}\n".format(end_time.strftime("%m-%d %H:%M:%S")))
@@ -92,7 +101,7 @@ if single_circuit:
     
 # Otherwise, run "benchmark"
 else:
-    
+    # Initialize output file
     out_file_name = "logs/Results__{}".format(time.strftime("%m-%d_%H-%M-%S", time.localtime()))
     out_file = open(out_file_name, "w+")
     out_file.write("Initialization Iterations: {}\n".format(initializing_iterations))
@@ -108,9 +117,9 @@ else:
     frame.grid(row=0, column=0)
     c = Canvas(frame, bg=background_colour, width=screensize["width"], height=screensize["height"])
     c.pack()
-    
     c.create_line(grid["middlex"], grid["top"], grid["middlex"], grid["bottom"], fill=line_colour)
 
+    # Initialize branch and bound
     branch_bound = BranchBound(c)
 
     # Add buttons
@@ -123,6 +132,7 @@ else:
     run_button.grid(row=0, column=1)
     
     for benchmark in benchmarks:
+        # Clear the canvas
         c.delete("circuit")
         
         # Open circuit
@@ -131,8 +141,10 @@ else:
         grid["x"] = (grid["right"] - grid["left"]) / configs["cells"]
         grid["y"] = (grid["bottom"] - grid["top"]) / configs["cells"]
         
+        # Set up branch and bound with current circuit
         branch_bound.setup(configs, nets)
 
+        # Update canvas
         c.create_text(
             20,
             20,
@@ -143,6 +155,7 @@ else:
             tag="circuit"
         )
         
+        # Initialize algorithm and output file
         branch_bound.initialize_partition()
         out_file = open(out_file_name, "a+")
         out_file.write("="*40)
@@ -152,13 +165,18 @@ else:
         out_file.write("\tRight: {}\n".format(branch_bound.partition["right"]))
         out_file.close()
         
+        # Run algorithm
         branch_bound.run_algorithm()
+        
+        # Record results
         out_file = open(out_file_name, "a+")
         branch_bound.write_output(out_file)
         out_file.close()
         
+        # Keep GUI open for a few seconds to view visual results
         time.sleep(5)
         
+        # Reset GUI
         branch_bound.clear()
         
     c.delete("circuit")
